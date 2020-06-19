@@ -7,7 +7,9 @@ let users = [];
 
 // 向所有连接的客户端广播
 function boardcast(obj) {
+  obj.len=users.length
   server.connections.forEach(function (conn) {
+    // 给每个客户端都发送消息
     conn.sendText(JSON.stringify(obj));
   });
 }
@@ -39,13 +41,17 @@ var server = ws
           date: getDate(),
           msg: obj.msg,
           uid: obj.uid,
+          imgurl:obj.img,
           username: obj.username,
         });
       } else {
+        //根据id 把users从里面删了
+        let index=users.findIndex(item=>item.uid===obj.uid)
+        users.splice(index,1)
         boardcast({
           type: 3,
           date: getDate(),
-          msg: obj.username+'退出聊天室',
+          msg: obj.username + "退出聊天室",
           uid: obj.uid,
           username: obj.username,
         });
